@@ -25,6 +25,7 @@ import {
   setOpenConfigurator,
   setOpenSidenav,
 } from "@/context";
+import React from "react";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
