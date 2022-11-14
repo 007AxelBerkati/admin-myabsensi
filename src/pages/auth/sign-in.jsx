@@ -115,6 +115,7 @@ export function SignIn() {
                 >
                   Sign In
                 </Button>
+
                 <Typography
                   variant="small"
                   className="mt-6 flex justify-center"
