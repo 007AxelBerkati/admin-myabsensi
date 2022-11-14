@@ -6,7 +6,7 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
+import { Home, Profile, Tables, Notifications, User } from "@/pages/dashboard";
 import { SignIn, ForgetPass } from "@/pages/auth";
 import React from "react";
 
@@ -23,6 +23,12 @@ export const routes = [
         name: "dashboard",
         path: "/home",
         element: <Home />,
+      },
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "user",
+        path: "/user",
+        element: <User />,
       },
       {
         icon: <UserCircleIcon {...icon} />,

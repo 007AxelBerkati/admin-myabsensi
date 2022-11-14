@@ -1,4 +1,6 @@
 import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
@@ -16,4 +18,12 @@ export const logout = () => {
 
 export const forgetPass = (email) => {
   return sendPasswordResetEmail(authentication, email);
+};
+
+export const authState = (callback) => {
+  return onAuthStateChanged(auth, callback);
+};
+
+export const register = (email, password) => {
+  return createUserWithEmailAndPassword(authentication, email, password);
 };
