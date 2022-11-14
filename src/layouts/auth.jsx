@@ -1,11 +1,6 @@
 import routes from "@/routes";
 import { Footer } from "@/widgets/layout";
-import {
-  ArrowRightOnRectangleIcon,
-  ChartPieIcon,
-  UserIcon,
-  UserPlusIcon,
-} from "@heroicons/react/24/solid";
+
 import { Route, Routes } from "react-router-dom";
 
 export function Auth() {
