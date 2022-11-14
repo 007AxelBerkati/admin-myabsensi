@@ -7,7 +7,8 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
 import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
-import { SignIn, SignUp } from "@/pages/auth";
+import { SignIn, ForgetPass } from "@/pages/auth";
+import React from "react";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -55,9 +56,9 @@ export const routes = [
       },
       {
         icon: <UserPlusIcon {...icon} />,
-        name: "sign up",
-        path: "/sign-up",
-        element: <SignUp />,
+        name: "forget password",
+        path: "/forget-pass",
+        element: <ForgetPass />,
       },
     ],
   },

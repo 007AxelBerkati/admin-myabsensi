@@ -11,15 +11,15 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import { Formik } from "formik";
-import { loginSchema } from "@/plugins/yup";
-import { login } from "@/plugins";
+import { forgetPassSchema } from "@/plugins/yup";
+import { forgetPass } from "@/plugins";
 
-export function SignIn() {
-  const loginUser = ({ email, password }) => {
-    login(email, password)
-      .then((res) => {
-        localStorage.setItem("user", JSON.stringify(res.user));
-        window.location.href = "/dashboard/home";
+export function ForgetPass() {
+  const ForgetPass = ({ email }) => {
+    forgetPass(email)
+      .then(() => {
+        alert("Please check your email");
+        window.location.href = "/auth/sign-in";
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
@@ -49,11 +49,11 @@ export function SignIn() {
       <div className="absolute inset-0 z-0 h-full w-full bg-black/50" />
       <div className="container mx-auto p-4">
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ email: "" }}
+          validationSchema={forgetPassSchema}
           onSubmit={(values) => {
-            loginUser(values);
+            ForgetPass(values);
           }}
-          validationSchema={loginSchema}
         >
           {({
             handleChange,
@@ -62,8 +62,6 @@ export function SignIn() {
             values,
             errors,
             touched,
-            isValid,
-            dirty,
           }) => (
             <Card className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4">
               <CardHeader
@@ -72,7 +70,7 @@ export function SignIn() {
                 className="mb-4 grid h-28 place-items-center"
               >
                 <Typography variant="h3" color="white">
-                  Sign In
+                  Forget Password
                 </Typography>
               </CardHeader>
               <CardBody className="flex flex-col gap-4">
@@ -82,52 +80,34 @@ export function SignIn() {
                   size="lg"
                   onChange={handleChange("email")}
                   value={values.email}
-                  onBlur={handleBlur("email")}
+                  handleBlur={handleBlur("email")}
                 />
                 {errors.email && touched.email && (
                   <Typography color="red" variant="small">
                     {errors.email}
                   </Typography>
                 )}
-                <Input
-                  type="password"
-                  label="Password"
-                  size="lg"
-                  onChange={handleChange("password")}
-                  value={values.password}
-                  onBlur={handleBlur("password")}
-                />
-                {errors.password && touched.password && (
-                  <Typography color="red" variant="small">
-                    {errors.password}
-                  </Typography>
-                )}
                 <div className="-ml-2.5">
-                  <Checkbox label="Remember Me" />
+                  <Checkbox label="I agree the Terms and Conditions" />
                 </div>
               </CardBody>
               <CardFooter className="pt-0">
-                <Button
-                  variant="gradient"
-                  fullWidth
-                  onClick={handleSubmit}
-                  disabled={!(dirty && isValid)}
-                >
-                  Sign In
+                <Button variant="gradient" fullWidth onClick={handleSubmit}>
+                  Forget Password
                 </Button>
                 <Typography
                   variant="small"
                   className="mt-6 flex justify-center"
                 >
-                  Forget Password?{" "}
-                  <Link to="/auth/forget-pass">
+                  Back to Login?{" "}
+                  <Link to="/auth/sign-in">
                     <Typography
                       as="span"
                       variant="small"
                       color="blue"
                       className="ml-1 font-bold"
                     >
-                      Forget Password
+                      Sign in
                     </Typography>
                   </Link>
                 </Typography>
@@ -140,4 +120,4 @@ export function SignIn() {
   );
 }
 
-export default SignIn;
+export default ForgetPass;
