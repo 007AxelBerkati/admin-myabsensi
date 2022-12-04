@@ -11,7 +11,7 @@ import {
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { addUserSchema } from "@/plugins/yup";
 import { register } from "@/plugins";
@@ -19,18 +19,23 @@ import { rdb } from "@/services";
 import { ref, set } from "firebase/database";
 
 export function User() {
-  const userAdd = ({ name, email, password, role }) => {
+  const userAdd = ({ name, email, password, role, pekerjaan }) => {
     register(email, password)
       .then((res) => {
         console.log(res.user.uid);
         const data = {
-          name,
+          fullname: name,
           email,
           role,
           uid: res.user.uid,
           photo: null,
+          pekerjaan: pekerjaan,
         };
-        set(ref(rdb, `users/${res.user.uid}`), data);
+        if (data.role === "admin") {
+          set(ref(rdb, `admins/${res.user.uid}`), data);
+        } else {
+          set(ref(rdb, `users/${res.user.uid}`), data);
+        }
         alert("User added successfully");
       })
 
@@ -46,7 +51,8 @@ export function User() {
           name: "",
           email: "",
           password: "",
-          role: "Admin",
+          role: "admin",
+          pekerjaan: "guru",
         }}
         onSubmit={(values) => {
           userAdd(values);
@@ -100,6 +106,17 @@ export function User() {
                       {errors.email}
                     </Typography>
                   )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Typography variant="label">Pekerjaan</Typography>
+                  <select
+                    className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                    onChange={handleChange("pekerjaan")}
+                    value={values.pekerjaan}
+                  >
+                    <option value="guru">Guru</option>
+                    <option value="staf">Staf TU</option>
+                  </select>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Typography variant="label">Password</Typography>
