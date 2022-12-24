@@ -12,33 +12,10 @@ import {
 import React from "react";
 import { Formik } from "formik";
 import { loginSchema } from "@/plugins/yup";
-import { login } from "@/plugins";
+import useAuth from "@/hooks/useAuth";
 
 export function SignIn() {
-  const loginUser = ({ email, password }) => {
-    login(email, password)
-      .then((res) => {
-        localStorage.setItem("user", JSON.stringify(res.user));
-        window.location.href = "/dashboard/home";
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          alert("email already in use!");
-        } else if (error.code === "auth/network-request-failed") {
-          alert("without network connection!");
-        } else if (error.code === "auth/invalid-email") {
-          alert("invalid E-mail!");
-        } else if (error.code === "auth/weak-password") {
-          alert("weak password!");
-        } else if (error.code === "auth/user-not-found") {
-          alert("user not found!");
-        } else if (error.code === "auth/wrong-password") {
-          alert("wrong password!");
-        } else {
-          alert("error!");
-        }
-      });
-  };
+  const { signIn } = useAuth();
 
   return (
     <>
@@ -51,7 +28,7 @@ export function SignIn() {
         <Formik
           initialValues={{ email: "", password: "" }}
           onSubmit={(values) => {
-            loginUser(values);
+            signIn(values.email, values.password);
           }}
           validationSchema={loginSchema}
         >

@@ -9,8 +9,8 @@ export const authSlice = createSlice({
     user: null,
   },
   reducers: {
-    loginSuccess: (state, action) => {
-      localStorage.setItem("token", action.payload.token);
+    LOGIN_SUCCESS: (state, action) => {
+      localStorage.setItem("user", action.payload.user);
       state.token = action.payload.token;
       state.isAuthenticated = true;
       state.loading = false;
@@ -18,6 +18,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess } = authSlice.actions;
+export const { LOGIN_SUCCESS } = authSlice.actions;
 
 export default authSlice.reducer;

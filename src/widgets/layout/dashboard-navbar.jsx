@@ -12,19 +12,8 @@ import {
   MenuItem,
   Avatar,
 } from "@material-tailwind/react";
-import {
-  UserCircleIcon,
-  Cog6ToothIcon,
-  BellIcon,
-  ClockIcon,
-  CreditCardIcon,
-  Bars3Icon,
-} from "@heroicons/react/24/solid";
-import {
-  useMaterialTailwindController,
-  setOpenConfigurator,
-  setOpenSidenav,
-} from "@/context";
+import { UserCircleIcon, Bars3Icon } from "@heroicons/react/24/solid";
+import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import React from "react";
 
 export function DashboardNavbar() {
