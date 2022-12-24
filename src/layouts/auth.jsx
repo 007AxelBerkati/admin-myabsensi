@@ -2,6 +2,7 @@ import routes from "@/routes";
 import { Footer } from "@/widgets/layout";
 
 import { Route, Routes } from "react-router-dom";
+import React from "react";
 
 export function Auth() {
   return (
@@ -11,7 +12,7 @@ export function Auth() {
           ({ layout, pages }) =>
             layout === "auth" &&
             pages.map(({ path, element }) => (
-              <Route exact path={path} element={element} />
+              <Route key={path} exact path={path} element={element} />
             ))
         )}
       </Routes>

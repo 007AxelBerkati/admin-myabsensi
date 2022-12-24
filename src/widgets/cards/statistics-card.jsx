@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
+import React from "react";
 
 export function StatisticsCard({ color, icon, title, value, footer }) {
   return (

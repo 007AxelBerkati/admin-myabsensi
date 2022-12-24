@@ -5,6 +5,7 @@ import {
   CardBody,
   Typography,
 } from "@material-tailwind/react";
+import React from "react";
 
 export function ProfileInfoCard({ title, description, details, action }) {
   return (
@@ -72,6 +73,7 @@ ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
   details: PropTypes.object,
+  action: PropTypes.node,
 };
 
 ProfileInfoCard.displayName = "/src/widgets/cards/profile-info-card.jsx";

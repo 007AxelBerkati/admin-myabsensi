@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Avatar, Typography } from "@material-tailwind/react";
-
+import React from "react";
 export function MessageCard({ img, name, message, action }) {
   return (
     <div className="flex items-center justify-between gap-4">
