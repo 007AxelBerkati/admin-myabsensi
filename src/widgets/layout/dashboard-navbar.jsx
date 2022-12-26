@@ -44,11 +44,15 @@ export function DashboardNavbar() {
           </Typography>
         </div>
         <div className="flex items-center">
-          <div className="md:w-50 mr-auto md:mr-4 ">
-            <Typography variant="h2" color="blue-gray" className=" text-right">
+          <div className="md:w-50 ml-90 mr-auto md:mr-4 ">
+            <Typography variant="h4" color="blue-gray" className=" text-right">
               {dataProfile.fullname}
             </Typography>{" "}
-            <Typography variant="h6" color="blue-gray" className=" text-right">
+            <Typography
+              variant="h6"
+              color="gray"
+              className="sm:text-left lg:text-right"
+            >
               Admin
             </Typography>{" "}
           </div>

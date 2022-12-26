@@ -1,7 +1,8 @@
-import { databaseRef, forgetPass, login } from "@/plugins";
+import { databaseRef, forgetPass, login, register } from "@/plugins";
 import { SET_ALERT } from "@/reduxx/slice/alert";
 import { LOGIN_SUCCESS } from "@/reduxx/slice/auth";
-import { onValue } from "firebase/database";
+import { rdb } from "@/services";
+import { onValue, ref, set } from "firebase/database";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +14,44 @@ const useAuth = () => {
   const errorHandler = useError();
 
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const [loading, setLoading] = useState({ login: false, forgotPass: false });
+  const [loading, setLoading] = useState({
+    login: false,
+    forgotPass: false,
+    register: false,
+  });
+
+  async function signUp({ name, email, password, role, pekerjaan }) {
+    setLoading({ ...loading, register: true });
+    register(email, password)
+      .then((res) => {
+        setLoading({ ...loading, register: false });
+        const data = {
+          fullname: name,
+          email,
+          role,
+          uid: res.user.uid,
+          photo: null,
+          pekerjaan: pekerjaan,
+        };
+        if (errorHandler(res)) return;
+
+        if (role === "admin") {
+          set(ref(rdb, `admins/${res.user.uid}`), data);
+        } else {
+          set(ref(rdb, `users/${res.user.uid}`), data);
+        }
+        dispatch(
+          SET_ALERT([
+            { status: "success", message: "User Berhasil Ditambahkan" },
+          ])
+        );
+        navigate("/login");
+      })
+      .catch((error) => {
+        setLoading({ ...loading, register: false });
+        errorHandler(error);
+      });
+  }
 
   async function signIn(email, password) {
     setLoading({ ...loading, login: true });
@@ -70,7 +108,6 @@ const useAuth = () => {
         dispatch(
           SET_ALERT([{ status: "success", message: "Check your email" }])
         );
-        navigate("/login");
       })
       .catch((error) => {
         setLoading({ ...loading, forgotPass: false });
@@ -78,7 +115,7 @@ const useAuth = () => {
       });
   }
 
-  return { isAuthenticated, loading, signIn, signOut, forgotPass };
+  return { isAuthenticated, loading, signIn, signOut, forgotPass, signUp };
 };
 
 export default useAuth;

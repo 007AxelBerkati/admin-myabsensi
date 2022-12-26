@@ -31,15 +31,7 @@ export const ShowAlert = () => {
   const dispatch = useDispatch();
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 10,
-        justifyContent: "center",
-        left: "30%",
-        right: "30%",
-      }}
-    >
+    <div className="absolute top-10 m-auto sm:left-20 sm:right-20 md:left-20 md:right-20 lg:left-80 lg:right-80">
       {alert?.map((alert, i) => (
         <PrimaryAlert
           key={i}

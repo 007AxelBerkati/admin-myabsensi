@@ -6,7 +6,14 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications, User } from "@/pages/dashboard";
+import {
+  Home,
+  Profile,
+  Tables,
+  Notifications,
+  User,
+  Attendance,
+} from "@/pages/dashboard";
 import { SignIn, ForgetPass } from "@/pages/auth";
 import React from "react";
 
@@ -41,6 +48,12 @@ export const routes = [
         name: "tables",
         path: "/tables",
         element: <Tables />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "attendance",
+        path: "/attendance",
+        element: <Attendance />,
       },
       {
         icon: <BellIcon {...icon} />,

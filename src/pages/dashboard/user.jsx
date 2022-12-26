@@ -20,9 +20,11 @@ import { ref, set } from "firebase/database";
 import useAllUser from "@/hooks/useAllUser";
 import { ILNullPhoto } from "@/assets";
 import moment from "moment";
+import useAuth from "@/hooks/useAuth";
 
 export function User() {
   const { dataAllUser, getAllUser } = useAllUser();
+  const { signUp } = useAuth();
 
   useEffect(() => {
     getAllUser();
@@ -39,30 +41,6 @@ export function User() {
   const showUpdateForm = (data) => {
     setInputForm(data);
     setFormMode("update");
-  };
-
-  const userAdd = ({ name, email, password, role, pekerjaan }) => {
-    register(email, password)
-      .then((res) => {
-        const data = {
-          fullname: name,
-          email,
-          role,
-          uid: res.user.uid,
-          photo: null,
-          pekerjaan: pekerjaan,
-        };
-        if (data.role === "admin") {
-          set(ref(rdb, `admins/${res.user.uid}`), data);
-        } else {
-          set(ref(rdb, `users/${res.user.uid}`), data);
-        }
-        alert("User added successfully");
-      })
-
-      .catch((err) => {
-        alert(err.message);
-      });
   };
 
   return (
@@ -92,7 +70,7 @@ export function User() {
             pekerjaan: "guru",
           }}
           onSubmit={(values) => {
-            userAdd(values);
+            signUp({ ...values });
           }}
           validationSchema={addUserSchema}
         >
