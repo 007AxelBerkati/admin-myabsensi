@@ -42,7 +42,7 @@ const useAuth = () => {
                 dispatch(
                   SET_ALERT([{ status: "success", message: "Login Success" }])
                 );
-                dispatch(LOGIN_SUCCESS({ user: { email, password } }));
+                dispatch(LOGIN_SUCCESS({ user: snapshot.val() }));
                 navigate("/dashboard/home");
               }
             });
@@ -70,12 +70,10 @@ const useAuth = () => {
         dispatch(
           SET_ALERT([{ status: "success", message: "Check your email" }])
         );
-        console.log(res);
         navigate("/login");
       })
       .catch((error) => {
         setLoading({ ...loading, forgotPass: false });
-        console.log(error.code);
         errorHandler(error);
       });
   }

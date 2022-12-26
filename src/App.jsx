@@ -30,8 +30,6 @@ export const ShowAlert = () => {
   const { alert } = useSelector((state) => state.alert);
   const dispatch = useDispatch();
 
-  console.log(alert);
-
   return (
     <div
       style={{

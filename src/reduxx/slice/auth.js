@@ -10,7 +10,7 @@ export const authSlice = createSlice({
   },
   reducers: {
     LOGIN_SUCCESS: (state, action) => {
-      localStorage.setItem("user", action.payload.user);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
       state.token = action.payload.token;
       state.isAuthenticated = true;
       state.loading = false;

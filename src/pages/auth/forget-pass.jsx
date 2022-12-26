@@ -38,6 +38,8 @@ export function ForgetPass() {
             values,
             errors,
             touched,
+            dirty,
+            isValid,
           }) => (
             <Card className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4">
               <CardHeader
@@ -65,7 +67,12 @@ export function ForgetPass() {
                 )}
               </CardBody>
               <CardFooter className="pt-0">
-                <Button variant="gradient" fullWidth onClick={handleSubmit}>
+                <Button
+                  variant="gradient"
+                  fullWidth
+                  onClick={handleSubmit}
+                  disabled={!(dirty && isValid)}
+                >
                   Forget Password
                 </Button>
                 <Typography

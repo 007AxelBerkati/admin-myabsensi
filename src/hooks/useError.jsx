@@ -5,7 +5,6 @@ const useError = () => {
   const dispatch = useDispatch();
 
   function errorHandler(response) {
-    console.log(response);
     if (typeof response === "string") {
       dispatch(ADD_ALERT({ status: "danger", message: response }));
       return true;

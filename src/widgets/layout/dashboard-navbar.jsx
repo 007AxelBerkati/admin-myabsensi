@@ -15,12 +15,16 @@ import {
 import { UserCircleIcon, Bars3Icon } from "@heroicons/react/24/solid";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import React from "react";
+import { ILNullPhoto } from "@/assets";
+import useProfile from "@/hooks/useProfile";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { fixedNavbar, openSidenav } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
+
+  const { dataProfile } = useProfile();
 
   return (
     <Navbar
@@ -40,8 +44,13 @@ export function DashboardNavbar() {
           </Typography>
         </div>
         <div className="flex items-center">
-          <div className="mr-auto md:mr-4 md:w-56">
-            <Input label="Type here" />
+          <div className="md:w-50 mr-auto md:mr-4 ">
+            <Typography variant="h2" color="blue-gray" className=" text-right">
+              {dataProfile.fullname}
+            </Typography>{" "}
+            <Typography variant="h6" color="blue-gray" className=" text-right">
+              Admin
+            </Typography>{" "}
           </div>
           <IconButton
             variant="text"
@@ -51,23 +60,10 @@ export function DashboardNavbar() {
           >
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
           </IconButton>
-          <Link to="/auth/sign-in">
-            <Button
-              variant="text"
-              color="blue-gray"
-              className="hidden items-center gap-1 px-4 xl:flex"
-            >
-              <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-              Sign In
-            </Button>
-            <IconButton
-              variant="text"
-              color="blue-gray"
-              className="grid xl:hidden"
-            >
-              <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-            </IconButton>
-          </Link>
+          <Avatar
+            src={dataProfile.photo ? dataProfile.photo : ILNullPhoto}
+            alt="User"
+          />
         </div>
       </div>
     </Navbar>
