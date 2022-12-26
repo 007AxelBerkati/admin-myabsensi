@@ -1,44 +1,20 @@
-import { Link } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import { forgetPassSchema } from "@/plugins/yup";
 import {
+  Button,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
   Input,
-  Checkbox,
-  Button,
   Typography,
 } from "@material-tailwind/react";
-import React from "react";
 import { Formik } from "formik";
-import { forgetPassSchema } from "@/plugins/yup";
-import { forgetPass } from "@/plugins";
+import { Link } from "react-router-dom";
+import React from "react";
 
 export function ForgetPass() {
-  const ForgetPass = ({ email }) => {
-    forgetPass(email)
-      .then(() => {
-        alert("Please check your email");
-        window.location.href = "/auth/sign-in";
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          alert("email already in use!");
-        } else if (error.code === "auth/network-request-failed") {
-          alert("without network connection!");
-        } else if (error.code === "auth/invalid-email") {
-          alert("invalid E-mail!");
-        } else if (error.code === "auth/weak-password") {
-          alert("weak password!");
-        } else if (error.code === "auth/user-not-found") {
-          alert("user not found!");
-        } else if (error.code === "auth/wrong-password") {
-          alert("wrong password!");
-        } else {
-          alert("error!");
-        }
-      });
-  };
+  const { forgotPass } = useAuth();
 
   return (
     <>
@@ -52,7 +28,7 @@ export function ForgetPass() {
           initialValues={{ email: "" }}
           validationSchema={forgetPassSchema}
           onSubmit={(values) => {
-            ForgetPass(values);
+            forgotPass(values.email);
           }}
         >
           {({
@@ -87,9 +63,6 @@ export function ForgetPass() {
                     {errors.email}
                   </Typography>
                 )}
-                <div className="-ml-2.5">
-                  <Checkbox label="I agree the Terms and Conditions" />
-                </div>
               </CardBody>
               <CardFooter className="pt-0">
                 <Button variant="gradient" fullWidth onClick={handleSubmit}>

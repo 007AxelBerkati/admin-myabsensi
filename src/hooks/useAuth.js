@@ -1,7 +1,8 @@
-import { forgetPass, login } from "@/plugins";
+import { databaseRef, forgetPass, login } from "@/plugins";
 import { SET_ALERT } from "@/reduxx/slice/alert";
 import { LOGIN_SUCCESS } from "@/reduxx/slice/auth";
-import React, { useState } from "react";
+import { onValue } from "firebase/database";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import useError from "./useError";
@@ -19,11 +20,35 @@ const useAuth = () => {
     setLoading({ ...loading, login: true });
     login(email, password)
       .then((res) => {
-        setLoading({ ...loading, login: false });
-        if (errorHandler(res)) return;
-        dispatch(SET_ALERT([{ status: "success", message: "Login success!" }]));
-        dispatch(LOGIN_SUCCESS({ user: { email, password } }));
-        navigate("/dashboard/home");
+        const queryUser = databaseRef(`users/${res.user.uid}`);
+        return onValue(queryUser, (snapshot) => {
+          if (snapshot.exists()) {
+            setLoading({ ...loading, login: false });
+            if (errorHandler(res)) return;
+            dispatch(
+              SET_ALERT([
+                {
+                  status: "warning",
+                  message:
+                    "Kamu menggunakan akun user, tolong login dengan menggunakan dengan akun Admin",
+                },
+              ])
+            );
+          } else {
+            const queryAdmin = databaseRef(`admins/${res.user.uid}`);
+            return onValue(queryAdmin, (snapshot) => {
+              if (snapshot.exists()) {
+                setLoading({ ...loading, login: false });
+                if (errorHandler(res)) return;
+                dispatch(
+                  SET_ALERT([{ status: "success", message: "Login Success" }])
+                );
+                dispatch(LOGIN_SUCCESS({ user: { email, password } }));
+                navigate("/dashboard/home");
+              }
+            });
+          }
+        });
       })
       .catch((error) => {
         setLoading({ ...loading, login: false });
@@ -39,17 +64,24 @@ const useAuth = () => {
 
   async function forgotPass(email) {
     setLoading({ ...loading, forgotPass: true });
-    forgetPass(email).then((res) => {
-      setLoading({ ...loading, forgotPass: false });
-      if (errorHandler(res)) return;
-      dispatch(
-        SET_ALERT({ status: "success", message: "Reset password success!" })
-      );
-      navigate("/login");
-    });
+    forgetPass(email)
+      .then((res) => {
+        setLoading({ ...loading, forgotPass: false });
+        if (errorHandler(res)) return;
+        dispatch(
+          SET_ALERT([{ status: "success", message: "Check your email" }])
+        );
+        console.log(res);
+        navigate("/login");
+      })
+      .catch((error) => {
+        setLoading({ ...loading, forgotPass: false });
+        console.log(error.code);
+        errorHandler(error);
+      });
   }
 
-  return { isAuthenticated, loading, signIn, signOut, forgetPass };
+  return { isAuthenticated, loading, signIn, signOut, forgotPass };
 };
 
 export default useAuth;

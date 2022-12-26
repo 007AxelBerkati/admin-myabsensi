@@ -5,6 +5,7 @@ const useError = () => {
   const dispatch = useDispatch();
 
   function errorHandler(response) {
+    console.log(response);
     if (typeof response === "string") {
       dispatch(ADD_ALERT({ status: "danger", message: response }));
       return true;
@@ -29,6 +30,17 @@ const useError = () => {
 
     if (response.code === "auth/wrong-password") {
       dispatch(ADD_ALERT({ status: "danger", message: "Wrong password!" }));
+      return true;
+    }
+
+    if (response.code === "auth/too-many-requests") {
+      dispatch(
+        ADD_ALERT({
+          status: "danger",
+          message: "Too many requests, try again later!",
+        })
+      );
+
       return true;
     }
 

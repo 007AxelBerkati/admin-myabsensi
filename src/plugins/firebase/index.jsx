@@ -5,7 +5,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { auth } from "@/services";
+import { auth, rdb } from "@/services";
+import { ref } from "firebase/database";
 
 const authentication = auth;
 export const login = (email, password) => {
@@ -26,4 +27,8 @@ export const authState = (callback) => {
 
 export const register = (email, password) => {
   return createUserWithEmailAndPassword(authentication, email, password);
+};
+
+export const databaseRef = (path) => {
+  return ref(rdb, path);
 };

@@ -42,7 +42,7 @@ export const ShowAlert = () => {
         right: "30%",
       }}
     >
-      {alert.map((alert, i) => (
+      {alert?.map((alert, i) => (
         <PrimaryAlert
           key={i}
           status={alert.status}
