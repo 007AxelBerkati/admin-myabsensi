@@ -4,12 +4,11 @@ import { LOGIN_SUCCESS } from "@/reduxx/slice/auth";
 import { onValue } from "firebase/database";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useError from "./useError";
 
 const useAuth = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const dispatch = useDispatch();
   const errorHandler = useError();
 
