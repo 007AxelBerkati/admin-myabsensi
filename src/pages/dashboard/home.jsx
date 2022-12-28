@@ -22,13 +22,81 @@ import {
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
-  statisticsCardsData,
   statisticsChartsData,
   projectsTableData,
   ordersOverviewData,
 } from "@/data";
+import useStatistic from "@/hooks/useStatistic";
+import {
+  BanknotesIcon,
+  ChartBarIcon,
+  UserIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/solid";
 
 export function Home() {
+  const {
+    totalUsers,
+    totalGuru,
+    totalStaff,
+    totalAdmin,
+    getTotalUsers,
+    loading,
+  } = useStatistic();
+
+  useEffect(() => {
+    getTotalUsers();
+  }, []);
+
+  const statisticsCardsData = [
+    {
+      color: "blue",
+      icon: BanknotesIcon,
+      title: "All Users",
+      value: `${totalUsers}`,
+      footer: {
+        color: "text-green-500",
+        value: "+55%",
+        label: "than last week",
+      },
+    },
+    {
+      color: "pink",
+      icon: UserIcon,
+      title: "Total Guru",
+      value: `${totalGuru}`,
+      footer: {
+        color: "text-green-500",
+        value: "+3%",
+        label: "than last month",
+      },
+    },
+    {
+      color: "green",
+      icon: UserPlusIcon,
+      title: "Total Staff",
+      value: `${totalStaff}`,
+      footer: {
+        color: "text-red-500",
+        value: "-2%",
+        label: "than yesterday",
+      },
+    },
+    {
+      color: "orange",
+      icon: ChartBarIcon,
+      title: "Total Admin",
+      value: `${totalAdmin}`,
+      footer: {
+        color: "text-green-500",
+        value: "+5%",
+        label: "than yesterday",
+      },
+    },
+  ];
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">

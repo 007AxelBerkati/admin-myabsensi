@@ -9,7 +9,7 @@ const usePresence = () => {
   const [presenceAllUser, setPresencAllUser] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function getPresenceAllUser() {
+  async function getPresenceAllUser(date) {
     setLoading(true);
     await getDocs(usersRef())
       .then(async (querySnapshot) => {
@@ -23,12 +23,18 @@ const usePresence = () => {
         list.map(async (item) => {
           const docRef = doc(usersRef(), item.uid);
           const subcollectionRef = collection(docRef, "presence");
-          const subDocRef = doc(subcollectionRef, `${moment().format("YYYY")}`);
+          const subDocRef = doc(
+            subcollectionRef,
+            `${moment(date).format("YYYY")}`
+          );
           const subCollectionRef2 = collection(
             subDocRef,
-            `${moment().format("MM")}`
+            `${moment(date).format("MM")}`
           );
-          const subDocRef2 = doc(subCollectionRef2, `${moment().format("DD")}`);
+          const subDocRef2 = doc(
+            subCollectionRef2,
+            `${moment(date).format("DD")}`
+          );
 
           await getDoc(subDocRef2)
             .then((doc) => {

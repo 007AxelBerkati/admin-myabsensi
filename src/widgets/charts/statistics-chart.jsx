@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 import Chart from "react-apexcharts";
+import React from "react";
 
 export function StatisticsChart({ color, chart, title, description, footer }) {
   return (
