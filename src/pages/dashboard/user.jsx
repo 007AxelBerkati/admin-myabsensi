@@ -1,30 +1,24 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Avatar,
-  Chip,
-  Tooltip,
-  Progress,
-  Button,
-} from "@material-tailwind/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { authorsTableData, projectsTableData } from "@/data";
-import React, { useEffect, useState } from "react";
-import { Formik } from "formik";
-import { addUserSchema } from "@/plugins/yup";
-import { register } from "@/plugins";
-import { rdb } from "@/services";
-import { ref, set } from "firebase/database";
-import useAllUser from "@/hooks/useAllUser";
 import { ILNullPhoto } from "@/assets";
-import moment from "moment";
+import useAllUser from "@/hooks/useAllUser";
 import useAuth from "@/hooks/useAuth";
+import { addUserSchema, updateUserSchema } from "@/plugins/yup";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Typography,
+} from "@material-tailwind/react";
+import { Formik } from "formik";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import React from "react";
 
 export function User() {
   const { dataAllUser, getAllUser } = useAllUser();
-  const { signUp } = useAuth();
+  const { signUp, updateUser, deleteUser } = useAuth();
 
   useEffect(() => {
     getAllUser();
@@ -43,11 +37,21 @@ export function User() {
     setFormMode("update");
   };
 
+  const submitForm = (values) => {
+    if (formMode === "create") {
+      signUp(values);
+    } else if (formMode === "update") {
+      updateUser(values, inputForm.uid);
+    }
+
+    setFormMode("");
+  };
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <div>
         <Button
-          color="blue"
+          color="green"
           buttonType="filled"
           size="regular"
           rounded={false}
@@ -58,21 +62,44 @@ export function User() {
         >
           Add User
         </Button>
+        {formMode !== "" && (
+          <Button
+            color="red"
+            buttonType="filled"
+            size="regular"
+            rounded={false}
+            block={false}
+            iconOnly={false}
+            style={{ marginLeft: 16 }}
+            ripple="light"
+            onClick={() => setFormMode("")}
+          >
+            Cancel
+          </Button>
+        )}
       </div>
 
       {formMode !== "" && (
         <Formik
           initialValues={{
-            name: "",
-            email: "",
-            password: "",
-            role: "admin",
-            pekerjaan: "guru",
+            name: inputForm.fullname || "",
+            email: inputForm.email || "",
+            password: inputForm.password || "",
+            role: inputForm.role || "user",
+            pekerjaan: inputForm.pekerjaan || "guru",
+            alamat: inputForm.address || "",
+            noHp: inputForm.phone_number || "",
+            tempat_lahir: inputForm.tempat_lahir || "",
+            birth_date: inputForm.birth_date
+              ? moment(inputForm.birth_date, "DD-MM-YYYY").toDate()
+              : moment().toDate(),
           }}
           onSubmit={(values) => {
-            signUp({ ...values });
+            submitForm(values);
           }}
-          validationSchema={addUserSchema}
+          validationSchema={
+            formMode === "create" ? addUserSchema : updateUserSchema
+          }
         >
           {({
             handleChange,
@@ -82,91 +109,162 @@ export function User() {
             errors,
             touched,
             isValid,
-            dirty,
+            setFieldValue,
           }) => (
             <Card>
               <CardHeader variant="gradient" color="blue" className="mb-8 p-3">
                 <Typography variant="h6" color="white">
-                  Add User
+                  {formMode === "create" ? "Add User" : "Update User"}
                 </Typography>
               </CardHeader>
               <CardBody>
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col gap-2">
-                    <Typography variant="label">Name</Typography>
-                    <input
-                      type="text"
-                      className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
-                      onChange={handleChange("name")}
-                      onBlur={handleBlur("name")}
-                      value={values.name}
-                    />
+                    <Typography variant="small">Name</Typography>
+                    <div>
+                      <input
+                        type="text"
+                        className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                        onChange={handleChange("name")}
+                        onBlur={handleBlur("name")}
+                        value={values.name}
+                        style={{ width: "50%" }}
+                      />
+                    </div>
                     {errors.name && touched.name && (
-                      <Typography variant="label" color="red">
+                      <Typography variant="small" color="red">
                         {errors.name}
                       </Typography>
                     )}
                   </div>
+                  {formMode === "create" && (
+                    <div className="flex flex-col gap-2">
+                      <Typography variant="small">Email</Typography>
+                      <div>
+                        <input
+                          type="text"
+                          className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                          onChange={handleChange("email")}
+                          onBlur={handleBlur("email")}
+                          value={values.email}
+                          style={{ width: "50%" }}
+                        />
+                      </div>
+                      {errors.email && touched.email && (
+                        <Typography variant="small" color="red">
+                          {errors.email}
+                        </Typography>
+                      )}
+                    </div>
+                  )}
                   <div className="flex flex-col gap-2">
-                    <Typography variant="label">Email</Typography>
-                    <input
-                      type="text"
-                      className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
-                      onChange={handleChange("email")}
-                      onBlur={handleBlur("email")}
-                      value={values.email}
-                    />
-                    {errors.email && touched.email && (
-                      <Typography variant="label" color="red">
-                        {errors.email}
-                      </Typography>
-                    )}
+                    <Typography variant="small">Pekerjaan</Typography>
+                    <div>
+                      <select
+                        className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                        onChange={handleChange("pekerjaan")}
+                        value={values.pekerjaan}
+                        style={{ width: "50%" }}
+                      >
+                        <option value="guru">Guru</option>
+                        <option value="staf">Staf TU</option>
+                      </select>
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Typography variant="label">Pekerjaan</Typography>
-                    <select
-                      className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
-                      onChange={handleChange("pekerjaan")}
-                      value={values.pekerjaan}
-                    >
-                      <option value="guru">Guru</option>
-                      <option value="staf">Staf TU</option>
-                    </select>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Typography variant="label">Password</Typography>
-                    <input
-                      type="text"
-                      className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
-                      onChange={handleChange("password")}
-                      onBlur={handleBlur("password")}
-                      value={values.password}
-                    />
-                    {errors.password && touched.password && (
-                      <Typography variant="label" color="red">
-                        {errors.password}
-                      </Typography>
-                    )}
+                    <Typography variant="small">Alamat</Typography>
+                    <div>
+                      <input
+                        type="text"
+                        className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                        onChange={handleChange("alamat")}
+                        onBlur={handleBlur("alamat")}
+                        value={values.alamat}
+                        style={{ width: "50%" }}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <Typography variant="label">Role</Typography>
-                    <select
-                      className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
-                      onChange={handleChange("role")}
-                      value={values.role}
-                    >
-                      <option value="admin">Admin</option>
-                      <option value="user">User</option>
-                    </select>
+                    <Typography variant="small">Role</Typography>
+                    <div>
+                      <select
+                        className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                        onChange={handleChange("role")}
+                        value={values.role}
+                        style={{ width: "50%" }}
+                      >
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                      </select>
+                    </div>
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <Typography variant="small">Tanggal Lahir</Typography>
+                    <div>
+                      <DatePicker
+                        selected={values.birth_date}
+                        onChange={(date) => setFieldValue("birth_date", date)}
+                        dateFormat="dd/MM/yyyy"
+                        className="rounded-md border border-blue-gray-100  p-2"
+                        style={{ width: "50%" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Typography variant="small">Tempat Lahir</Typography>
+                    <div>
+                      <input
+                        type="text"
+                        className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                        onChange={handleChange("tempat_lahir")}
+                        onBlur={handleBlur("tempat_lahir")}
+                        value={values.tempat_lahir}
+                        style={{ width: "50%" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Typography variant="small">No Hp</Typography>
+                    <div>
+                      <input
+                        type="text"
+                        className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                        onChange={handleChange("noHp")}
+                        onBlur={handleBlur("noHp")}
+                        value={values.noHp}
+                        style={{ width: "50%" }}
+                      />
+                    </div>
+                  </div>
+                  {formMode === "create" && (
+                    <div className="flex flex-col gap-2">
+                      <Typography variant="small">Password</Typography>
+                      <div>
+                        <input
+                          type="text"
+                          className="rounded-lg border border-blue-gray-200 px-3 py-2 text-blue-gray-500"
+                          onChange={handleChange("password")}
+                          onBlur={handleBlur("password")}
+                          value={values.password}
+                          style={{ width: "50%" }}
+                        />
+                      </div>
+                      {errors.password && touched.password && (
+                        <Typography color="red" variant={"small"}>
+                          {errors.password}
+                        </Typography>
+                      )}
+                    </div>
+                  )}
                   <Button
                     variant="gradient"
                     fullWidth
                     onClick={handleSubmit}
-                    disabled={!(dirty && isValid)}
+                    style={{ marginTop: 16, width: "15%" }}
+                    disabled={!isValid}
                   >
-                    Add User
+                    {formMode === "create" ? "Tambah" : "Edit"}
                   </Button>
                 </div>
               </CardBody>
@@ -191,7 +289,8 @@ export function User() {
                   "Nomor Hp",
                   "Tempat Tanggal Lahir",
                   "Alamat",
-                  "",
+                  "edit",
+                  "delete",
                 ].map((el) => (
                   <th
                     key={el}
@@ -264,13 +363,30 @@ export function User() {
                       </Typography>
                     </td>
                     <td className={className}>
-                      <Typography
-                        as="a"
-                        href="#"
-                        className="text-xs font-semibold text-blue-gray-600"
-                      >
-                        Edit
-                      </Typography>
+                      <div className="flex items-center gap-4">
+                        <Button
+                          variant="gradient"
+                          color="yellow"
+                          onClick={() => {
+                            showUpdateForm(data);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    </td>
+                    <td className={className}>
+                      <div className="flex items-center gap-4">
+                        <Button
+                          variant="gradient"
+                          color="red"
+                          onClick={() => {
+                            deleteUser(data.uid);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -279,7 +395,7 @@ export function User() {
           </table>
         </CardBody>
       </Card>
-      <Card>
+      {/* <Card>
         <CardHeader variant="gradient" color="blue" className="mb-8 p-6">
           <Typography variant="h6" color="white">
             Tabel Admin
@@ -387,7 +503,7 @@ export function User() {
             </tbody>
           </table>
         </CardBody>
-      </Card>
+      </Card> */}
     </div>
   );
 }

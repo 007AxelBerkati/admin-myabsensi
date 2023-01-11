@@ -24,3 +24,8 @@ export const addUserSchema = Yup.object().shape({
   password: Yup.string().required("Tolong Masukan Password Anda").trim(),
   role: Yup.string().required("Tolong Pilih Role Anda").trim(),
 });
+
+export const updateUserSchema = Yup.object().shape({
+  name: Yup.string().required("Tolong isi Nama Anda").trim(),
+  role: Yup.string().required("Tolong Pilih Role Anda").trim(),
+});
