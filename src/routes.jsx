@@ -1,20 +1,15 @@
+import { ForgetPass, SignIn } from "@/pages/auth";
+import { Attendance, Home, User } from "@/pages/dashboard";
 import {
-  HomeIcon,
-  UserCircleIcon,
-  TableCellsIcon,
-  BellIcon,
   ArrowRightOnRectangleIcon,
+  HomeIcon,
+  TableCellsIcon,
+  UserCircleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import {
-  Home,
-  Profile,
-  Tables,
-  Notifications,
-  User,
-  Attendance,
-} from "@/pages/dashboard";
-import { SignIn, ForgetPass } from "@/pages/auth";
+import DataCuti from "./pages/dashboard/dataCuti";
+import DataIzin from "./pages/dashboard/dataIzin";
+import DataSakit from "./pages/dashboard/dataSakit";
 import React from "react";
 
 const icon = {
@@ -37,30 +32,48 @@ export const routes = [
         path: "/user",
         element: <User />,
       },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "profile",
-        path: "/profile",
-        element: <Profile />,
-      },
+      // {
+      //   icon: <UserCircleIcon {...icon} />,
+      //   name: "profile",
+      //   path: "/profile",
+      //   element: <Profile />,
+      // },
+      // {
+      //   icon: <TableCellsIcon {...icon} />,
+      //   name: "tables",
+      //   path: "/tables",
+      //   element: <Tables />,
+      // },
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "tables",
-        path: "/tables",
-        element: <Tables />,
-      },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "attendance",
-        path: "/attendance",
+        name: "Kelola Data Presensi",
+        path: "/Kelola Data Presensi",
         element: <Attendance />,
       },
       {
-        icon: <BellIcon {...icon} />,
-        name: "notifactions",
-        path: "/notifactions",
-        element: <Notifications />,
+        icon: <TableCellsIcon {...icon} />,
+        name: "Lihat Data Izin",
+        path: "/Data Izin",
+        element: <DataIzin />,
       },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Lihat Data Sakit",
+        path: "/Data Sakit",
+        element: <DataSakit />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Lihat Data Cuti",
+        path: "/Data Cuti",
+        element: <DataCuti />,
+      },
+      // {
+      //   icon: <BellIcon {...icon} />,
+      //   name: "notifactions",
+      //   path: "/notifactions",
+      //   element: <Notifications />,
+      // },
     ],
   },
   {

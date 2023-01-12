@@ -11,6 +11,7 @@ import useError from "./useError";
 
 const useAuth = () => {
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const errorHandler = useError();
 
